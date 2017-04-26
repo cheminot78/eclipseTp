@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<h:outputText value="test">test</h:outputText>
+	<h:form>
+		<h:inputText value="#{userBean.nbr1}"></h:inputText>
+		<h:inputText value="#{userBean.nbr2}"></h:inputText>
+		<h:commandButton value="calculer"
+			action="#{userBean.calculer(userBean.nbr1,userBean.nbr2)}"></h:commandButton>
+	</h:form>
+	<h:outputText value="#{userBean.result}"></h:outputText>
+	<h:messages style="color:red"></h:messages>
+	<h:form>
+
+		<h:inputText value="#{userBean.nom}" required="true"
+			requiredMessage="ban soon">Nom</h:inputText>
+		<h:inputText value="#{userBean.prenom}" required="true"
+			requiredMessage="ban soon">Prenom</h:inputText>
+		<h:commandButton value="add"
+			action="#{userBean.add(userBean.nom,userBean.prenom)}"
+			update=":form:getAll"></h:commandButton>
+	</h:form>
+
+	<h:form id="form">
+		<p:growl id="msgs" showDetail="true" />
+		<h:commandButton value="getAll" action="#{userBean.getAll}"></h:commandButton>
+		<p:dataTable id="getAll" value="#{userBean.tabUser}" var="u">
+			<p:column>
+				<h:outputText value="#{u.id}"></h:outputText>
+			</p:column>
+			<p:column>
+				<h:outputText value="#{u.nom}"></h:outputText>
+			</p:column>
+			<p:column>
+				<h:outputText value="#{u.prenom}"></h:outputText>
+			</p:column>
+			<p:column style="width:32px;text-align: center">
+				<p:commandButton update=":form:carDetail"
+					action="#{userBean.getOne(u.id)}"
+					oncomplete="PF('carDialog').show()" icon="ui-icon-search"
+					title="View">
+					<f:setPropertyActionListener value="#{u}" target="#{userBean.user}" />
+				</p:commandButton>
+			</p:column>
+			<p:column style="width:100px;text-align: center">
+				<p:commandButton value="delete" action="#{userBean.delete(u.id)}"
+					update=":form:getAll"></p:commandButton>
+			</p:column>
+			<p:column style="width:100px;text-align: center"></p:column>
+
+
+		</p:dataTable>
+		<p:dialog header="Car Info" widgetVar="carDialog" modal="true"
+			showEffect="fade" hideEffect="fade" resizable="false">
+			<p:outputPanel id="carDetail" style="text-align:center;">
+				<p:panelGrid columns="2" rendered="#{not empty userBean.user}"
+					columnClasses="label,value">
+
+
+					<h:outputText value="Id:" />
+					<h:outputText value="#{userBean.user.id}" />
+
+					<h:outputText value="Nom" />
+					<h:outputText value="#{userBean.user.nom}" />
+					<h:outputText value="Prenom" />
+					<h:outputText value="#{userBean.user.prenom}" />
+
+					<h:inputText value="#{userBean.user.id}"></h:inputText>
+					<h:inputText id="nvnom" value="#{userBean.user.nom}"></h:inputText>
+					<h:inputText id="nvprenom" value="#{userBean.user.prenom}"></h:inputText>
+
+					<p:commandButton value="update" update=":form:getAll"
+						action="#{userBean.update(userBean.user.id,userBean.user.nom,userBean.user.prenom)}"
+						oncomplete="PF('carDialog').hide()">
+					</p:commandButton>
+
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+
+	</h:form>
+
+	<!-- <h:form>
+		<h:commandButton value="Forward" action="#{userBean.forward}"></h:commandButton>
+		<h:commandButton value="Redirect" action="#{userBean.redirect}"></h:commandButton>
+	</h:form> -->
+	
+	<h:form>
+		<p:commandButton value="Forward"></p:commandButton>
+		<p:ajax event="click" listener="#{userBean.forward}"></p:ajax>
+		<p:commandButton value="Redirect"></p:commandButton>
+	</h:form>
+
+</h:body>
+</html>
